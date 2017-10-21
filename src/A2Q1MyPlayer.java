@@ -1,4 +1,4 @@
-public class A2Q1MyPlayer_TESTING implements A2Q1AI {
+public class A2Q1MyPlayer implements A2Q1AI {
     public A2Q1GameI.Move move(A2Q1GameI game) {
         // Percentage chance of timeout, just to see what happens!
         if (Math.random() < 0.05) {

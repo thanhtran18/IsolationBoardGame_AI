@@ -15,8 +15,11 @@ public class A2Q1RandomPlayer implements A2Q1AI {
         A2Q1GameI.Move move;
         do {
             move = A2Q1GameI.Move.values()[(int)(Math.random() * 4 + 1)];
+            //System.out.println("Player number: " + game.currentPlayer()); //DELETE THESE TWO LINES
+            //System.out.println("Random's Score: " + game.score('1'));
         } while (!game.canMove(move));
         return move;
+
     }
 
     public String toString() {
