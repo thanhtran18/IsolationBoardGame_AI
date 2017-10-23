@@ -4,6 +4,7 @@ public interface A2Q1GameI {
     public int score(char player);
     public int millisLeft();
     public int currentPlayer();
+    public int players();
     public boolean canMove(Move m);
 }
 

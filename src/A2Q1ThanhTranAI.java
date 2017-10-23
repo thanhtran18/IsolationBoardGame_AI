@@ -3,13 +3,14 @@ import org.omg.PortableInterceptor.NON_EXISTENT;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class A2Q1ThanhTranAI implements A2Q1AI
 {
     private class ValueAndMove
     {
-        double value;
-        A2Q1GameI.Move move;
+        private double value;
+        private A2Q1GameI.Move move;
 
         public ValueAndMove(double value, A2Q1GameI.Move move)
         {
@@ -46,7 +47,7 @@ public class A2Q1ThanhTranAI implements A2Q1AI
 
     public A2Q1GameI.Move move(A2Q1GameI game)
     {
-        return alphaBetaPruning(game, Double.MIN_VALUE, Double.MAX_VALUE, 3, game.currentPlayer()).getMove();
+        return alphaBetaPruning(game, -Double.MAX_VALUE, Double.MAX_VALUE, 3, game.currentPlayer()).getMove();
         //return alphaBetaPruning(game, Double.MIN_VALUE, Double.MAX_VALUE, 3, getMyStartNumber(game)).getMove();
     }
 /*
@@ -66,57 +67,61 @@ public class A2Q1ThanhTranAI implements A2Q1AI
     private ValueAndMove alphaBetaPruning(A2Q1GameI game, double alpha, double beta, int depth, int playerNumber)
     {
         //ValueAndMove result = new ValueAndMove();
-        ArrayList<A2Q1GameI.Move> moves = generateMoves(game, playerNumber);
+        //ArrayList<A2Q1GameI.Move> moves = generateMoves(game, playerNumber);
+        ArrayList<A2Q1GameI.Move> moves = generateMoves(game, game.currentPlayer());
         if (depth == 0 || game.millisLeft() <= 0)
             //return A2Q1GameI.Move.NONE;
-            return new ValueAndMove(heuristicValue(game, 2, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
-        if (moves.size() == 0)
+            return new ValueAndMove(heuristicValue(game, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
+        else if (moves.size() == 0)
             //return A2Q1GameI.Move.NONE;
-            return new ValueAndMove(heuristicValue(game, 2, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
+            return new ValueAndMove(heuristicValue(game, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
 
-        if (playerNumber == game.currentPlayer()) //max value
-        {
-            ValueAndMove result = new ValueAndMove();
-            double value = Double.MIN_VALUE;
-            for (A2Q1GameI.Move possMove : moves)
-            {
-                if (playerNumber < getNumOfPlayers(game))
-                {
-                    value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
-                    result = new ValueAndMove(value, possMove);
-                }
-                else
-                {
-                    value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
-                    result = new ValueAndMove(value, possMove);
-                }
-                alpha = Math.max(alpha, value);
-                if (beta <= alpha)
-                    break;
-            }
-            return result;
-        }
         else
         {
-            ValueAndMove result = new ValueAndMove();
-            double value = Double.MAX_VALUE;
-            for (A2Q1GameI.Move possMove: moves)
+            if (playerNumber == game.currentPlayer()) //max value
             {
-                if (playerNumber < getNumOfPlayers(game))
+                ValueAndMove result = new ValueAndMove();
+                double value = -Double.MAX_VALUE;
+                for (A2Q1GameI.Move possMove : moves)
                 {
-                    value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
-                    result = new ValueAndMove(value, possMove);
+                    if (playerNumber < game.players())
+                    {
+                        value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
+                        result = new ValueAndMove(value, possMove);
+                    }
+                    else
+                    {
+                        value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
+                        result = new ValueAndMove(value, possMove);
+                    }
+                    alpha = Math.max(alpha, value);
+                    if (beta <= alpha)
+                        break;
                 }
-                else
-                {
-                    value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
-                    result = new ValueAndMove(value, possMove);
-                }
-                beta = Math.min(beta, value);
-                if (beta <= alpha)
-                    break;
+                return result;
             }
-            return result;
+            else
+            {
+                ValueAndMove result = new ValueAndMove();
+                double value = Double.MAX_VALUE;
+                for (A2Q1GameI.Move possMove : moves)
+                {
+                    if (playerNumber < game.players())
+                    {
+                        value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
+                        result = new ValueAndMove(value, possMove);
+                    }
+                    else
+                    {
+                        value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
+                        result = new ValueAndMove(value, possMove);
+                    }
+                    beta = Math.min(beta, value);
+                    if (beta <= alpha)
+                        break;
+                }
+                return result;
+            }
         }
     }
 
@@ -196,7 +201,7 @@ public class A2Q1ThanhTranAI implements A2Q1AI
             return generateOpponentPossMoves(game, playerNumber);
     }
 
-    private double heuristicValue(A2Q1GameI game, int numOfPlayers, A2Q1GameI.Move newMove)
+    private double heuristicValue(A2Q1GameI game, A2Q1GameI.Move newMove)
     {
         int opponentNumber = 0;
         if (game.currentPlayer() == 1)
@@ -209,14 +214,16 @@ public class A2Q1ThanhTranAI implements A2Q1AI
         int numOfOpponentPastMoves = game.score((char) (opponentNumber + 48));
 
         if (myNewPossibleMoves.size() == 0 && opponentNewPossibleMoves.size() != 0)
-            return Double.MIN_VALUE;
+            return -Double.MAX_VALUE;
         else if (myNewPossibleMoves.size() != 0 && opponentNewPossibleMoves.size() == 0)
             return Double.MAX_VALUE;
         else if (myNewPossibleMoves.size() == 0 && opponentNewPossibleMoves.size() == 0)
             return -10.0;
         else if (myNewPossibleMoves.size() >= opponentNewPossibleMoves.size())
-            return (Math.pow((double) (myNewPossibleMoves.size()/opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size());
-            //return (Math.pow((double) (myNewPossibleMoves.size() - opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size());
+        {
+            double a = (Math.pow((double) (myNewPossibleMoves.size()/opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size());
+            return a;
+        }    //return (Math.pow((double) (myNewPossibleMoves.size() - opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size());
         else if (myNewPossibleMoves.size() < opponentNewPossibleMoves.size())
             return -((Math.pow((double) (myNewPossibleMoves.size()/opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size()));
             //return -((Math.pow((double) (myNewPossibleMoves.size() - opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size()));
@@ -245,26 +252,6 @@ public class A2Q1ThanhTranAI implements A2Q1AI
         return position;
     }
 
-    private int getNumOfPlayers(A2Q1GameI game)
-    {
-        ArrayList<Integer> possiblePlayer = new ArrayList<>(Arrays.asList(1, 3, 4, 5, 6, 7, 8, 9));
-        int numOfPlayers = 0;
-        for (int i = 0; i < game.board().length; i++)
-        {
-            for (int j = 0; j < game.board()[i].length; j++)
-            {
-                for (int k : possiblePlayer)
-                {
-                    if (game.board()[i][j] == k)
-                    {
-                        numOfPlayers++;
-                        possiblePlayer.remove(k);
-                    }
-                }
-            }
-        }
-        return numOfPlayers;
-    } //getNumOfPlayers
 
     private boolean canOpponentMove(A2Q1GameI game, A2Q1GameI.Move move, int playerNumber)
     {

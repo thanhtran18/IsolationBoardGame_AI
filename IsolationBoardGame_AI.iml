@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Dropbox/aaa UManitoba/Courses/Term 6 (Fall 2017)/COMP3190/A2 3190/A2Q1/A2Q1.jar!/" />

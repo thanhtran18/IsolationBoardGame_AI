@@ -1,7 +1,6 @@
-public class A2Q1RandomPlayer implements A2Q1AI {
+public class RandomPlayer implements A2Q1AI {
     public A2Q1GameI.Move move(A2Q1GameI game) {
         // Percentage chance of timeout, just to see what happens!
-        /*
         if (Math.random() < 0.05) {
             System.out.println("Will timeout in...");
             long last = game.millisLeft();
@@ -11,7 +10,7 @@ public class A2Q1RandomPlayer implements A2Q1AI {
                     System.out.println(" " + last / 1000);
                 }
             }
-        }*/
+        }
 
         A2Q1GameI.Move move;
         do {
@@ -20,7 +19,6 @@ public class A2Q1RandomPlayer implements A2Q1AI {
             //System.out.println("Random's Score: " + game.score('1'));
         } while (!game.canMove(move));
         return move;
-
     }
 
     public String toString() {
