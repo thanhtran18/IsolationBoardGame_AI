@@ -1,13 +1,8 @@
-import org.omg.PortableInterceptor.NON_EXISTENT;
-
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class A2Q1ThanhTranAI implements A2Q1AI
 {
-    private class ValueAndMove
+    class ValueAndMove
     {
         private double value;
         private A2Q1GameI.Move move;
@@ -59,7 +54,7 @@ public class A2Q1ThanhTranAI implements A2Q1AI
         if (moves.size() == 0)
             return null;
 
-        result = maxValue(game, Double.MIN_VALUE, Double.MAX_VALUE, depth, game.currentPlayer(), moves.get(0)).getMove();
+1        result = maxValue(game, Double.MIN_VALUE, Double.MAX_VALUE, depth, game.currentPlayer(), moves.get(0)).getMove();
 
         return result;
     }*/
@@ -68,61 +63,87 @@ public class A2Q1ThanhTranAI implements A2Q1AI
     {
         //ValueAndMove result = new ValueAndMove();
         //ArrayList<A2Q1GameI.Move> moves = generateMoves(game, playerNumber);
-        ArrayList<A2Q1GameI.Move> moves = generateMoves(game, game.currentPlayer());
-        if (depth == 0 || game.millisLeft() <= 0)
+        //ArrayList<A2Q1GameI.Move> moves = generateMoves(game, game.currentPlayer());
+        if (depth == 0)// || game.millisLeft() <= 0)
             //return A2Q1GameI.Move.NONE;
-            return new ValueAndMove(heuristicValue(game, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
-        else if (moves.size() == 0)
+        {
+            ArrayList<ValueAndMove> values = new ArrayList<>();
+            double max = -Double.MAX_VALUE;
+            ValueAndMove maxMove = new ValueAndMove();
+            for (A2Q1GameI.Move possMove: generateMoves(game, game.currentPlayer()))
+            {
+                double value = heuristicValue(game, possMove);
+                ValueAndMove result = new ValueAndMove(value, possMove);
+
+                values.add(result);
+                if (value > max)
+                {
+                    max = value;
+                    maxMove = result;
+                }
+            }
+            return maxMove;
+        }
+        else if (generateMoves(game, game.currentPlayer()).size() == 0 ||
+                (generateMoves(game, game.currentPlayer()).size() == 1 && generateMoves(game, game.currentPlayer()).get(0) == A2Q1GameI.Move.NONE))
             //return A2Q1GameI.Move.NONE;
             return new ValueAndMove(heuristicValue(game, A2Q1GameI.Move.NONE), A2Q1GameI.Move.NONE);
 
+
+        if (playerNumber == game.currentPlayer()) //max value
+        {
+            ValueAndMove result = new ValueAndMove();
+            double value = -Double.MAX_VALUE;
+            for (A2Q1GameI.Move possMove : generateMoves(game, game.currentPlayer()))
+            {
+                if (playerNumber < game.players())
+                {
+                    result = alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1);
+                    value = Math.max(value, result.getValue());
+                    //value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
+                    //result = new ValueAndMove(value, possMove);
+                }
+                else
+                {
+                    result = alphaBetaPruning(game, alpha, beta, depth - 1, 1);
+                    value = Math.max(value, result.getValue());
+                    //value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
+                    //result = new ValueAndMove(value, possMove);
+                }
+                alpha = Math.max(alpha, value);
+                if (beta <= alpha)
+                    break;
+            }
+            return result;
+        }
         else
         {
-            if (playerNumber == game.currentPlayer()) //max value
+            ValueAndMove result = new ValueAndMove();
+            double value = Double.MAX_VALUE;
+            //for (A2Q1GameI.Move possMove : generateMoves(game, game.currentPlayer()))
+            for (A2Q1GameI.Move possMove : generateMoves(game, playerNumber))
             {
-                ValueAndMove result = new ValueAndMove();
-                double value = -Double.MAX_VALUE;
-                for (A2Q1GameI.Move possMove : moves)
+                if (playerNumber < game.players())
                 {
-                    if (playerNumber < game.players())
-                    {
-                        value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
-                        result = new ValueAndMove(value, possMove);
-                    }
-                    else
-                    {
-                        value = Math.max(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
-                        result = new ValueAndMove(value, possMove);
-                    }
-                    alpha = Math.max(alpha, value);
-                    if (beta <= alpha)
-                        break;
+                    result = alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1);
+                    value = Math.min(value, result.getValue());
+                    //value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
+                    //result = new ValueAndMove(value, possMove);
                 }
-                return result;
-            }
-            else
-            {
-                ValueAndMove result = new ValueAndMove();
-                double value = Double.MAX_VALUE;
-                for (A2Q1GameI.Move possMove : moves)
+                else
                 {
-                    if (playerNumber < game.players())
-                    {
-                        value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, playerNumber + 1).getValue());
-                        result = new ValueAndMove(value, possMove);
-                    }
-                    else
-                    {
-                        value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
-                        result = new ValueAndMove(value, possMove);
-                    }
-                    beta = Math.min(beta, value);
-                    if (beta <= alpha)
-                        break;
+                    result = alphaBetaPruning(game, alpha, beta, depth - 1, 1);
+                    value = Math.min(value, result.getValue());
+                    //value = Math.min(value, alphaBetaPruning(game, alpha, beta, depth - 1, 1).getValue());
+                    //result = new ValueAndMove(value, possMove);
                 }
-                return result;
+                beta = Math.min(beta, value);
+                if (beta <= alpha)
+                    break;
             }
+            return result;
         }
+
     }
 
     private ArrayList<A2Q1GameI.Move> generateMovesForChild(A2Q1GameI game, A2Q1GameI.Move newMove)
@@ -228,6 +249,7 @@ public class A2Q1ThanhTranAI implements A2Q1AI
             return -((Math.pow((double) (myNewPossibleMoves.size()/opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size()));
             //return -((Math.pow((double) (myNewPossibleMoves.size() - opponentNewPossibleMoves.size()), 2)) + (numOfOpponentPastMoves - opponentNewPossibleMoves.size()));
         return 0.0;
+        //return (Math.random() * 4 + 1);
     }
 
     private char getMyStartNumber(A2Q1GameI game)
@@ -367,3 +389,4 @@ public class A2Q1ThanhTranAI implements A2Q1AI
     }
 */
 }
+
