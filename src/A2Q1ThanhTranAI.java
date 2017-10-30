@@ -225,6 +225,7 @@ public class A2Q1ThanhTranAI implements A2Q1AI
             return Math.pow(centrality(game, newMove), 4.0);
 
         //case 2: the stage after the beginning stage, the result will be a combination of different heuristic.
+        //        Please refer to the README file for more explanation
         return Math.pow((double) getAvailableTilesAround(game, childPos), 4.0) + sum + commonMoves(game, 2)
                 + Math.pow(centrality(game, newMove), 2);
     } //heuristicValue
@@ -249,11 +250,11 @@ public class A2Q1ThanhTranAI implements A2Q1AI
 
     //------------------------------------------------------
     // commonMoves
-    // PURPOSE:	this heuristic shows number of common moves between the AI player and its opponent
+    // PURPOSE:	this heuristic shows number of uncommon moves between the AI player and its opponent
     // PARAMETERS:
     //      A2Q1GameI: the whole game board.
     //      int: the opponent number
-    // Returns: the number of common moves
+    // Returns: the number of uncommon moves
     //------------------------------------------------------
     private int commonMoves(A2Q1GameI game, int opponentNumber)
     {
