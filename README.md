@@ -3,11 +3,13 @@
 
 *** Case 1: 
     ------
+    
     The beginning of the game (i.e. more than 87.5% (or 7/8) of the tiles of the board have not been occupied).
     In this case, I just want to make sure my AI player get closer to the central area of the board, where there will likely have more opportunities to proceed further in the game. The heuristic function is: (centrality(new position))^4 (explanation about this centrality heuristic is below).
 
 *** Case 2:
     ------
+    
     In other cases (any cases that comes after the beginning stage of the game), the score of a move is calculated in a more sophisticated way, which is a combination of multiple heuristic functions:
     
     - The top priority is to move to a new position that has the highest number of unoccupied tiles around it (i.e. there will likely be more chances to move after that). For example, if position A has 8 unoccupied square around it, and B has 10, then B will be more valuable in terms of this heuristic. In contribution to the total score for the game, this value will be powered to the fourth (highest weight).
@@ -22,6 +24,7 @@
 
 *** How to calculate those heuristic functions above?
     ------------------------------------------------
+    
     - Available squares around the player heuristic: calculated by first making up an "around" area for the current player. The area will have the size of half the size of the actual game board. With this area, all we need to do now is traverse through this area and count the number of unoccupied squares.
     
     - Centrality: First calculate the position of the centre tile. Then measure the "centrality" of each possible new position by calculating the Manhattan distance between the centre tile and the new position of the player: absolute value of (xA - xB) + absolute value of (yA - yB) where A, B are the two positions.
