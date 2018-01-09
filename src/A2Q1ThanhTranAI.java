@@ -1,6 +1,5 @@
 //-----------------------------------------
 // NAME		    : CONG THANH TRAN
-// STUDENT NUMBER	: 7802106
 // COURSE		: COMP 3190 - Introduction to Artificial Intelligence
 // INSTRUCTOR	: JOHN BRAICO
 // ASSIGNMENT	: assignment #2
