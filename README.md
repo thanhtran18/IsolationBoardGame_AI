@@ -1,5 +1,5 @@
 # IsolationBoardGame_AI
-- The algorithm used for this question is alpha-beta pruning algorithm combined with iterative deepening technique. The quality of the heuristic value (i.e. the score for each move) is determined using multiple heuristic with two main cases: (Please refer to the calculation of these heuristic functions at after the descriptions of two cases, or refer to the actual implementation).
+- The algorithm used for this project is alpha-beta pruning algorithm combined with iterative deepening technique. The quality of the heuristic value (i.e. the score for each move) is determined using multiple heuristic with two main cases: (Please refer to the calculation of these heuristic functions at after the descriptions of two cases, or refer to the actual implementation).
 
 *** Case 1: 
     ------
