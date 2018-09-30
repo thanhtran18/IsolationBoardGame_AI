@@ -1,14 +1,3 @@
-//-----------------------------------------
-// NAME		    : CONG THANH TRAN
-// COURSE		: COMP 3190 - Introduction to Artificial Intelligence
-// INSTRUCTOR	: JOHN BRAICO
-// ASSIGNMENT	: assignment #2
-// QUESTION	    : question #1
-//
-// REMARKS: Implement the computer player (AI player) for the Isolation board game.
-//
-//-----------------------------------------
-
 import java.util.*;
 
 public class A2Q1ThanhTranAI implements A2Q1AI
@@ -19,30 +8,13 @@ public class A2Q1ThanhTranAI implements A2Q1AI
         private double value;
         private A2Q1GameI.Move move;
 
-        //------------------------------------------------------
-        // ValueAndMove Constructor
-        //
-        // PURPOSE:	Initializes this object
-        // PARAMETERS:
-        //		double: the value returned by the algorithm
-        //      Move:   the best move returned by the algorithm
-        // Returns: None
-        //------------------------------------------------------
         public ValueAndMove(double value, A2Q1GameI.Move move)
         {
             this.value = value;
             this.move = move;
         }
 
-        //------------------------------------------------------
-        // ValueAndMove Constructor
-        //
-        // PURPOSE:	Initializes this object
-        // PARAMETERS:
-        //		double: the value returned by the algorithm
-        //      Move:   the best move returned by the algorithm
-        // Returns: None
-        //------------------------------------------------------
+        
         public ValueAndMove()
         {
             this.value = 0.0;
@@ -59,27 +31,13 @@ public class A2Q1ThanhTranAI implements A2Q1AI
             this.value = value;
         }
 
-        //------------------------------------------------------
-        // getValue
-        //
-        // PURPOSE:	get the the returned value
-        // PARAMETERS: none
-        // Returns:
-        //		double: the value
-        //------------------------------------------------------
+        
         public double getValue()
         {
             return value;
         }
 
-        //------------------------------------------------------
-        // getMove
-        //
-        // PURPOSE:	get the best move chosen by the algorithm
-        // PARAMETERS: none
-        // Returns:
-        //		Move: the move
-        //------------------------------------------------------
+        
         public A2Q1GameI.Move getMove()
         {
             return move;
